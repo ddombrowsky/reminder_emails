@@ -13,6 +13,10 @@ use HTML::Entities;
 my $MINDATE = ParseDate("now") || die;
 my $MAXDATE = DateCalc($MINDATE, "+7 days") || die;
 
+print("Displaying scheduled tasks for week\n".
+      "\tstarting ".UnixDate($MINDATE,"%Y-%m-%d")."\n".
+      "\t  ending ".UnixDate($MAXDATE,"%Y-%m-%d")."\n\n");
+
 sub readNode($$)
 {
     my $reader = shift;

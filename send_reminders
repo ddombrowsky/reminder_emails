@@ -1,0 +1,19 @@
+#!/bin/sh
+
+SRC=/home/davek/src/reminder_emails
+PRE=$SRC/prefix.txt
+POST=$SRC/postfix.txt
+INFO=`mktemp`
+FULL=`mktemp`
+
+/home/davek/src/reminder_emails/weekly_google_agenda.pl > $INFO 2>&1
+
+cat $PRE $INFO $POST > $FULL
+cat $FULL | \
+    mail -s "DEACONS: reminder, week starting `date`" \
+        fpc_deacons@googlegroups.com
+
+# stdout sent as separate log email when run by cron
+echo "Sent out $FULL on `date`"
+echo "----------"
+cat $FULL
