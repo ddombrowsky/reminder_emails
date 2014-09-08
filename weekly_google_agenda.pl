@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 #
+# Scraper to harvest 1 week of events from a public google calendar.
+#
+# notes on importing CSV files into google calendar:
+# https://support.google.com/calendar/answer/45656?hl=en&ref_topic=1672003
 
 use warnings;
 use strict;
@@ -124,7 +128,7 @@ sub processFeed($)
 my $ua = LWP::UserAgent->new;
 $ua->timeout(60);
 
-my $response = $ua->get("https://www.google.com/calendar/feeds/t4lkdbnmv3j0ogp9hlhb3ujj14%40group.calendar.google.com/public/basic");
+my $response = $ua->get("https://www.google.com/calendar/feeds/t4lkdbnmv3j0ogp9hlhb3ujj14%40group.calendar.google.com/public/basic?max-results=9999");
 
 if($response->is_success){
     my $xml = $response->decoded_content();
