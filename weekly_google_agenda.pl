@@ -13,6 +13,8 @@ use LWP::UserAgent;
 use Date::Manip;
 use HTML::Entities;
 
+my $DEBUG = 0;
+
 # only display items between these two dates (inclusive)
 my $MINDATE = ParseDate("now") || die;
 my $MAXDATE = DateCalc($MINDATE, "+7 days") || die;
@@ -33,6 +35,8 @@ sub readNode($$)
        $reader->value)
     {
         $ret = decode_entities($reader->value);
+        $ret =~ s/\n//g;
+        $ret =~ s/\r//g;
     }else{
         printf("parse error: #text doesn't follow $name\n");
     }
@@ -48,7 +52,7 @@ sub processEntry($)
 
     while($reader->read()){
 
-        if (0) {
+        if ($DEBUG) {
             # debugging...
             printf("%s %d %d %s %d\n",
                 " " x $reader->depth,
@@ -75,29 +79,46 @@ sub processEntry($)
                 if($title){
                     $state = 1;
                     $summary = undef;
+                    if ($DEBUG) {
+                        print("Got title: $title\n");
+                    }
                 }
             }
         }elsif($state == 1){
             if($ename eq 'summary') {
                 $summary = readNode($reader, 'summary');
                 if($summary){
+                    if ($DEBUG) {
+                        print("Got summary: $summary\n");
+                    }
                     if($title){
                         $state = 0;
 
                         # Date is stored in summary (of course it is!).
                         # If it falls within the range, print it.
                         my $date;
-                        if($summary =~ /When: (.*)\</){
+                        if($summary =~ /When: ([^<]*)</){
                             $date = $1;
+
+                            # If there's a " to " in the string, keep only
+                            # the start time.
+                            $date =~ s/ to .*$//g;
+
                             my $d = ParseDate($date);
-                            if((Date_Cmp($MINDATE,$d) <= 0) &&
+                            if (!$d) {
+                                print("ParseDate: can't parse date '$date' ".
+                                      "for '$title'\n");
+                            }elsif((Date_Cmp($MINDATE,$d) <= 0) &&
                                (Date_Cmp($d,$MAXDATE) <= 0))
                             {
                                 print($title." : ".$date."\n");
                             }
+                        }else{
+                            print("parse error in re: can't parse ".
+                                  "summary '$summary' for '$title'\n");
                         }
                     }else{
-                        print("parse error: no title for summary $summary\n");
+                        print("parse error: no title for summary '$summary'\n");
                     }
                 }
             }
