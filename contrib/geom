@@ -1,0 +1,7 @@
+# geometry of the 6 stamps (-gravity NorthWest)
+G1=+165+880 
+G2=+1419+880 
+G3=+165+1980 
+G4=+1419+1980 
+G5=+165+3074 
+G6=+1419+3074 
