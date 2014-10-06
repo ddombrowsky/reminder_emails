@@ -1,7 +1,15 @@
-# geometry of the 6 stamps (-gravity NorthWest)
-G1=+165+880 
-G2=+1419+880 
-G3=+165+1980 
-G4=+1419+1980 
-G5=+165+3074 
-G6=+1419+3074 
+# using convert...
+# geometry of the 6 numeric stamps (-gravity NorthWest)
+SG1=+165+880 
+SG2=+1419+880 
+SG3=+165+1980 
+SG4=+1419+1980 
+SG5=+165+3074 
+SG6=+1419+3074 
+# geometry of the 6 image of QR codes (-gravity NorthWest -draw "image over x,x 0,0 d.png")
+QRG1=858,808 
+QRG2=2183,808 
+QRG3=858,1903 
+QRG4=2183,1903 
+QRG5=858,3000 
+QRG6=2183,3000
