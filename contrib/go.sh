@@ -3,6 +3,7 @@
 URL=http://1stpreschurch.org/
 START=`cat START`
 WORKDIR=w
+ALLFILES=files.txt
 
 echo Serial Number Start: $START
 
@@ -11,7 +12,7 @@ cd $WORKDIR || exit
 . ../geom
 
 # clean
-rm -f qr.png qr[0-9].png foo.png
+rm -f qr.png qr[0-9].png foo.png $ALLFILES
 
 # exit on any error
 set -e
@@ -55,8 +56,13 @@ while [ $i -gt 0 ] ; do
 
     START=$((START+6))
 
+    pngtopnm ${SERIAL1}.png | pnmtops | ps2pdf - ${SERIAL1}.pdf
+    echo ${SERIAL1}.pdf >> $ALLFILES
+
     # clean
     rm -f qr.png qr[0-9].png foo.png
 
     i=$((i-1))
 done
+
+pdfmerge `cat $ALLFILES` > tickets.pdf
