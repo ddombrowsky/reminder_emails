@@ -17,10 +17,11 @@ my $DEBUG = 0;
 
 # only display items between these two dates (inclusive)
 my $MINDATE = ParseDate("now") || die;
+my $MINDATE_s = UnixDate($MINDATE,"%Y-%m-%d");
 my $MAXDATE = DateCalc($MINDATE, "+7 days") || die;
 
 print("Displaying scheduled tasks for week\n".
-      "\tstarting ".UnixDate($MINDATE,"%Y-%m-%d")."\n".
+      "\tstarting $MINDATE_s\n".
       "\t  ending ".UnixDate($MAXDATE,"%Y-%m-%d")."\n\n");
 
 sub readNode($$)
@@ -149,9 +150,11 @@ sub processFeed($)
 my $ua = LWP::UserAgent->new;
 $ua->timeout(60);
 
-my $response = $ua->get("https://www.google.com/calendar/feeds/t4lkdbnmv3j0ogp9hlhb3ujj14%40group.calendar.google.com/public/basic?max-results=9999");
+if($DEBUG) { print(localtime()." fetching url...\n"); }
+my $response = $ua->get("https://www.google.com/calendar/feeds/t4lkdbnmv3j0ogp9hlhb3ujj14%40group.calendar.google.com/public/basic?orderby=starttime&sortorder=a&start-min=$MINDATE_s");
 
 if($response->is_success){
+    if($DEBUG) { print(localtime()." decoding content...\n"); }
     my $xml = $response->decoded_content();
     my $reader = XML::LibXML::Reader->new(string => $xml);
 
