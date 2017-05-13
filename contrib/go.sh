@@ -65,4 +65,5 @@ while [ $i -gt 0 ] ; do
     i=$((i-1))
 done
 
+echo -n $START > START
 pdfmerge `cat $ALLFILES` > tickets.pdf
